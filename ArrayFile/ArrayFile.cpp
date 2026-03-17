@@ -1,174 +1,146 @@
 ﻿#include <iostream>
-#include <fstream>
 #include <vector>
-#include <ctime>
+#include <algorithm>
+#include <climits>
+#include <float.h>
 
 using namespace std;
 
-int ConsoleInputSizeArray(const int sizeMax) {
-    int size = 0;
-    do {
-        cout << " Enter array size (0 < n <= " << sizeMax << "): ";
-        cin >> size;
-    } while (size <= 0 || size > sizeMax);
-    return size;
+void task1() {
+    int n;
+    cout << "Enter array size N: ";
+    cin >> n;
+
+    int* A = new int[n];
+    cout << "Enter array elements: ";
+    int positiveCount = 0;
+    for (int i = 0; i < n; i++) {
+        cin >> A[i];
+        if (A[i] > 0) positiveCount++;
+    }
+
+    if (positiveCount == 0) {
+        cout << "No positive elements found.\n";
+    }
+    else {
+        int* B = new int[positiveCount];
+        int j = 0;
+        for (int i = 0; i < n; i++) {
+            if (A[i] > 0) {
+                B[j++] = A[i];
+            }
+        }
+
+        cout << "Array B (positive elements): ";
+        for (int i = 0; i < positiveCount; i++) {
+            cout << B[i] << " ";
+        }
+        cout << endl;
+        delete[] B;
+    }
+    delete[] A;
 }
 
-void Task1(int n, double* A) {
-    cout << "\n--- Task 1 ---" << endl;
-    double* B = new double[n];
-    int countB = 0;
+void task2() {
+    int n, T;
+    cout << "Enter size N and number T: ";
+    cin >> n >> T;
+
+    vector<int> A(n);
+    cout << "Enter array elements: ";
+    for (int i = 0; i < n; i++) cin >> A[i];
+
+    int lastMaxIdx = -1;
+    int maxValue = INT_MIN;
+    bool foundT = false;
+
+    int* ptr = A.data();
 
     for (int i = 0; i < n; i++) {
-        if (A[i] > 0) B[countB++] = A[i];
-    }
-
-    if (countB == 0) {
-        cout << "No positive elements." << endl;
-    }
-    else {
-        cout << "Result Array B: ";
-        for (int i = 0; i < countB; i++) cout << B[i] << " ";
-
-        ofstream fout("Task1_Output.txt");
-        fout << countB << endl;
-        for (int i = 0; i < countB; i++) fout << B[i] << " ";
-        fout.close();
-        cout << "\nSaved to Task1_Output.txt" << endl;
-    }
-    delete[] B;
-}
-
-void Task2(int n, double* A) {
-    cout << "\n--- Task 2 ---" << endl;
-    double T;
-    cout << "Enter threshold T: ";
-    cin >> T;
-
-    double* pA = A;
-    double* pEnd = A + n;
-    double* pStart = nullptr;
-
-    for (double* p = pA; p < pEnd; p++) {
-        if (*p > T) {
-            pStart = p;
-            break;
+        if (!foundT) {
+            if (*(ptr + i) > T) foundT = true;
         }
-    }
 
-    if (pStart == nullptr) {
-        cout << "No elements > T found." << endl;
-        return;
-    }
-
-    double maxVal = -1e9;
-    double* pLastMax = nullptr;
-    bool found = false;
-
-    for (double* p = pStart; p < pEnd; p++) {
-        if (*p > 0) {
-            if (!found || *p >= maxVal) {
-                maxVal = *p;
-                pLastMax = p;
-                found = true;
+        if (foundT && *(ptr + i) > 0) {
+            if (*(ptr + i) >= maxValue) {
+                maxValue = *(ptr + i);
+                lastMaxIdx = i;
             }
         }
     }
 
-    if (found) {
-        int lastMaxIdx = pLastMax - A;
-        cout << "Last max positive index: " << lastMaxIdx << " (Value: " << maxVal << ")" << endl;
-    }
-    else {
-        cout << "No positive elements found after T." << endl;
-    }
+    if (lastMaxIdx != -1)
+        cout << "Index of the last maximum positive element: " << lastMaxIdx << endl;
+    else
+        cout << "No elements matching the criteria were found.\n";
 }
 
-void Task3(int n, double* A) {
-    cout << "\n--- Task 3 ---" << endl;
-    double a, b;
-    cout << "Enter a: "; cin >> a;
-    cout << "Enter b: "; cin >> b;
+void task3() {
+    double a, b, X[200];
+    int n;
+    cout << "Enter a and b: ";
+    cin >> a >> b;
+    cout << "Enter n (max 200): ";
+    cin >> n;
 
-    double sum_lt_a = 0.0;
-    double prod_gt_b = 1.0;
-    bool found_prod = false;
+    if (n > 200) n = 200;
 
-    double max_in = 0.0, min_in = 0.0;
-    bool found_in = false;
+    cout << "Enter array elements: ";
+    double sumLessA = 0;
+    double prodGreaterB = 1;
+    bool hasGreaterB = false;
+    double maxInRange = -DBL_MAX;
+    double minInRange = DBL_MAX;
+    bool hasInRange = false;
 
     for (int i = 0; i < n; i++) {
-        if (A[i] < a) {
-            sum_lt_a += A[i];
+        cin >> X[i];
+
+        if (X[i] < a) sumLessA += X[i];
+
+        if (X[i] > b) {
+            prodGreaterB *= X[i];
+            hasGreaterB = true;
         }
-        if (A[i] > b) {
-            prod_gt_b *= A[i];
-            found_prod = true;
-        }
-        if (A[i] >= a && A[i] <= b) {
-            if (!found_in) {
-                max_in = A[i];
-                min_in = A[i];
-                found_in = true;
-            }
-            else {
-                if (A[i] > max_in) max_in = A[i];
-                if (A[i] < min_in) min_in = A[i];
-            }
+
+        if (X[i] >= a && X[i] <= b) {
+            if (X[i] > maxInRange) maxInRange = X[i];
+            if (X[i] < minInRange) minInRange = X[i];
+            hasInRange = true;
         }
     }
 
-    cout << "Sum of elements < " << a << " = " << sum_lt_a << endl;
+    cout << "Sum of X(i) < a: " << sumLessA << endl;
+    cout << "Dobutok of X(i) > b: " << (hasGreaterB ? prodGreaterB : 0) << endl;
 
-    if (found_prod) cout << "Product of elements > " << b << " = " << prod_gt_b << endl;
-    else cout << "No elements > " << b << " found for product." << endl;
-
-    if (found_in) {
-        cout << "Max in range [" << a << ", " << b << "] = " << max_in << endl;
-        cout << "Min in range [" << a << ", " << b << "] = " << min_in << endl;
+    if (hasInRange) {
+        cout << "Max in range [a, b]: " << maxInRange << endl;
+        cout << "Min in range [a, b]: " << minInRange << endl;
     }
     else {
-        cout << "No elements found in range [" << a << ", " << b << "]." << endl;
+        cout << "No elements found within the range [a, b].\n";
     }
 }
 
 int main() {
-    int n = 0;
-    double* A = nullptr;
     int choice;
-
-    while (true) {
-        cout << "\n========== MENU ==========" << endl;
-        cout << "1. Input main array A (max 200)\n2. Run Task 1\n3. Run Task 2\n4. Run Task 3\n0. Exit\nChoice: ";
+    do {
+        cout << "\n========= MENU =========\n";
+        cout << "1. Task 1\n";
+        cout << "2. Task 2\n";
+        cout << "3. Task 3\n";
+        cout << "0. Exit\n";
+        cout << "Your choice: ";
         cin >> choice;
 
-        if (choice == 0) break;
-
         switch (choice) {
-        case 1:
-            if (A) delete[] A;
-            n = ConsoleInputSizeArray(200);
-            A = new double[n];
-            for (int i = 0; i < n; i++) {
-                cout << "A[" << i << "] = "; cin >> A[i];
-            }
-            break;
-        case 2:
-            if (A) Task1(n, A);
-            else cout << "Please input array A first!" << endl;
-            break;
-        case 3:
-            if (A) Task2(n, A);
-            else cout << "Please input array A first!" << endl;
-            break;
-        case 4:
-            if (A) Task3(n, A);
-            else cout << "Please input array A first!" << endl;
-            break;
-        default:
-            cout << "Invalid choice." << endl;
+        case 1: task1(); break;
+        case 2: task2(); break;
+        case 3: task3(); break;
+        case 0: cout << "\n"; break;
+        default: cout << "Invalid choice! Please try again.\n";
         }
-    }
-    if (A) delete[] A;
+    } while (choice != 0);
+
     return 0;
 }
