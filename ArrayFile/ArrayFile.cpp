@@ -10,6 +10,7 @@ void task1() {
     int n;
     cout << "Enter N: ";
     cin >> n;
+    cout << "Enter array\n";
 
     int* A = new int[n];
     int positiveCount = 0;
@@ -44,6 +45,7 @@ void task2() {
     int n, T;
     cout << "Enter N and T: ";
     cin >> n >> T;
+    cout << "Enter array\n";
 
     vector<int> A(n);
     for (int i = 0; i < n; i++) cin >> A[i];
@@ -80,6 +82,7 @@ void task3() {
     cin >> a >> b;
     cout << "Enter n (max 200): ";
     cin >> n;
+    cout << "Enter array\n";
 
     if (n > 200) n = 200;
 
