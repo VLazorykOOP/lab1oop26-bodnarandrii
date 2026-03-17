@@ -8,11 +8,10 @@ using namespace std;
 
 void task1() {
     int n;
-    cout << "Enter array size N: ";
+    cout << "Enter N: ";
     cin >> n;
 
     int* A = new int[n];
-    cout << "Enter array elements: ";
     int positiveCount = 0;
     for (int i = 0; i < n; i++) {
         cin >> A[i];
@@ -31,7 +30,7 @@ void task1() {
             }
         }
 
-        cout << "Array B (positive elements): ";
+        cout << "B ";
         for (int i = 0; i < positiveCount; i++) {
             cout << B[i] << " ";
         }
@@ -43,11 +42,10 @@ void task1() {
 
 void task2() {
     int n, T;
-    cout << "Enter size N and number T: ";
+    cout << "Enter N and T: ";
     cin >> n >> T;
 
     vector<int> A(n);
-    cout << "Enter array elements: ";
     for (int i = 0; i < n; i++) cin >> A[i];
 
     int lastMaxIdx = -1;
@@ -72,7 +70,7 @@ void task2() {
     if (lastMaxIdx != -1)
         cout << "Index of the last maximum positive element: " << lastMaxIdx << endl;
     else
-        cout << "No elements matching the criteria were found.\n";
+        cout << "No elements found.\n";
 }
 
 void task3() {
@@ -85,7 +83,6 @@ void task3() {
 
     if (n > 200) n = 200;
 
-    cout << "Enter array elements: ";
     double sumLessA = 0;
     double prodGreaterB = 1;
     bool hasGreaterB = false;
